@@ -5,4 +5,4 @@ export type {
 	JsonValue,
 	KirimiInit,
 	KirimiOptions,
-} from "./src/kirimi.ts";
+} from "./src/types.ts";

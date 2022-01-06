@@ -7,16 +7,8 @@ import {
 Deno.test("timeout error should be thrown", async () => {
 	await assertRejects(
 		async () => {
-			const kirimi = new Kirimi({
-				baseUrl: "https://httpbin.org",
-				headers: {
-					foo: "bar",
-				},
-				searchParams: {
-					foo: "bar",
-				},
-			});
-			await kirimi.get("delay/1000", { timeout: 1 });
+			const kirimi = new Kirimi();
+			await kirimi.get("https://httpbin.org/", { timeout: 1 });
 		},
 		KirimiError,
 		"request timed out",
@@ -64,7 +56,7 @@ Deno.test("body shouldn't replaced with json", async () => {
 	});
 	const response = await kirimi.post("post", {
 		body: "foo",
-		json: '{"foo": "bar"}',
+		json: { "foo": "bar" },
 	});
 	const json = await response.json();
 	assertEquals(json.json, null);
@@ -76,7 +68,7 @@ Deno.test("json should set 'content-type' headers to 'application/json'", async 
 		baseUrl: "https://httpbin.org/",
 	});
 	const response = await kirimi.post("post", {
-		json: {"foo": "bar"},
+		json: { "foo": "bar" },
 	});
 	const json = await response.json();
 	assertEquals(json.headers["Content-Type"], "application/json");
@@ -91,5 +83,5 @@ Deno.test("signal shouldn't replaced with timeout", async () => {
 		signal,
 		timeout: 1,
 	});
-	const _ = response.text();
+	await response.text();
 });
